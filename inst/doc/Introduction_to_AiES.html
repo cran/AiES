@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Shinji Tokunaga, Masabumi Funakoshi, Toshiyuki Araki" />
+
+<meta name="date" content="2026-11-02" />
+
+<title>Introduction to AiES: Axon integrity Evaluation System</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+p.abstract{
+text-align: center;
+font-weight: bold;
+}
+div.abstract{
+margin: auto;
+width: 90%;
+}
+</style>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to AiES: Axon integrity
+Evaluation System</h1>
+<h4 class="author">Shinji Tokunaga, Masabumi Funakoshi, Toshiyuki
+Araki</h4>
+<h4 class="date">2026-11-02</h4>
+<div class="abstract">
+<p class="abstract">Abstract</p>
+AiES is a free and open-source R package for (high-throughput) axonal
+integrity analysis of micrographs such as murine dorsal root ganglia
+explant cultures. AiES offers tools to segment neurites, extract
+morphological features, generate SVM models, and quantify axon
+integrity. AiES is available under the 3-Clause BSD license.
+</div>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The AiES package provides an integrated workflow for <strong>axon
+image analysis</strong>, including feature extraction, machine learning
+classification, and quantitative assessment.<br />
+The main functions are:</p>
+<ul>
+<li><code>axDistmap()</code>: Processes image files (TIFF) to create
+distance maps and optionally binary images. It also computes various
+morphological features and exports them as a text file.</li>
+<li><code>axSvm()</code>: Trains a Support Vector Machine (SVM)
+classifier to distinguish between degenerative and intact axon states
+using morphological feature data.</li>
+<li><code>axQnt()</code>: Quantifies the Axon Integrity Index (AII) and
+Degeneration Index (DI) using one of the two built-in models or a model
+trained with <code>axSvm()</code>.</li>
+</ul>
+<p>AiES is designed for phase-contrast images in which axons appear
+darker than the background. Images are resampled to the scale at which
+the built-in models were trained (0.791746 µm per pixel), so the pixel
+size of the input should be known. See <code>?AiES</code> for supported
+and not recommended image formats.</p>
+</div>
+<div id="typical-workflow" class="section level1">
+<h1>Typical Workflow</h1>
+<div id="feature-extraction-from-images-axdistmap" class="section level2">
+<h2>1. Feature Extraction from Images (<code>axDistmap</code>)</h2>
+<p>The <code>axDistmap()</code> function creates distance maps and,
+optionally, binary images from TIFF image files, and extracts the
+features used for classification.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(AiES)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># Specify the sample image folders included in the package</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>img_dir1 <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Degenerate_Images&quot;</span>, <span class="at">package =</span> <span class="st">&quot;AiES&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>img_dir2 <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Intact_Images&quot;</span>, <span class="at">package =</span> <span class="st">&quot;AiES&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co"># The sample images are 900 px wide (0.791746 um per pixel)</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">axDistmap</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="at">folder_paths =</span> <span class="fu">c</span>(img_dir1, img_dir2),  <span class="co"># multiple folders supported</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  <span class="at">pixelSize =</span> <span class="fl">0.791746</span>,                  <span class="co"># pixel size of the input images (um)</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  <span class="at">output_path =</span> <span class="fu">tempdir</span>()</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>)</span></code></pre></div>
+<p>This function processes all TIFF files in each folder, including
+subfolders. For each input folder, a subfolder
+<code>&lt;folder&gt;_&lt;date&gt;_output_files</code> is created in
+<code>output_path</code>. It contains, for each image:</p>
+<ul>
+<li>A feature table
+(<code>&lt;image&gt;_&lt;date&gt;_ImageData.txt</code>) with the
+features required by the built-in models, under short names (e.g.,
+<code>Ras</code>, <code>ENT</code>; see “Feature names” in
+<code>?axDistmap</code>)</li>
+<li>A distance map image</li>
+<li>A binary image (optional, <code>binaryImg = TRUE</code>)</li>
+</ul>
+<p>and one parameter file
+(<code>&lt;folder&gt;_&lt;date&gt;_Parameters.csv</code>) recording the
+properties of each image and the scale at which it was analyzed.</p>
+<p>If <code>pixelSize</code> is omitted, the pixel size is read from the
+file metadata (OME-XML or TIFF resolution tags). If it cannot be
+determined, the image is resized to a fixed width
+(<code>resizeW</code>), and a warning is issued.</p>
+</div>
+<div id="building-an-svm-classifier-axsvm" class="section level2">
+<h2>2. Building an SVM Classifier (<code>axSvm</code>)</h2>
+<p>The <code>axSvm()</code> function builds an SVM model using the
+extracted features.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Specify feature data folders</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>Degenerate_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Degenerate_txt&quot;</span>, <span class="at">package =</span> <span class="st">&quot;AiES&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>Intact_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Intact_txt&quot;</span>, <span class="at">package =</span> <span class="st">&quot;AiES&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># Train an SVM classifier on the feature set of the built-in g0.1_APA model</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="fu">axSvm</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;g0.1_APA&quot;</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="at">degenerate_path =</span> Degenerate_dir,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="at">intact_path =</span> Intact_dir,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  <span class="at">output_data_path =</span> <span class="fu">tempdir</span>(),</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="at">output_model_path =</span> <span class="fu">tempdir</span>()</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>)</span></code></pre></div>
+<p>With <code>model = &quot;g0.1_APA&quot;</code> or <code>&quot;g0.2_ACC&quot;</code>, the
+features and hyperparameters of the corresponding built-in model are
+used. By default, up to 12 images per group and up to 1000 objects per
+image are sampled randomly with <code>seed = 1</code>, which corresponds
+to the conditions used for training the built-in models. Set
+<code>maxNumImg = NULL</code> and <code>maxNumObj = NULL</code> to use
+all data.</p>
+<p>This function generates:</p>
+<ul>
+<li>An extracted data file for machine learning</li>
+<li>A trained SVM model file. If the <code>*_Parameters.csv</code> file
+written by <code>axDistmap()</code> is found next to the input data, the
+scale of the training data is recorded with the model.</li>
+</ul>
+</div>
+<div id="quantitative-analysis-axqnt" class="section level2">
+<h2>3. Quantitative Analysis (<code>axQnt</code>)</h2>
+<p>The <code>axQnt()</code> function uses a built-in model, or a model
+trained with <code>axSvm()</code>, to calculate the Axon Integrity Index
+and Degeneration Index for new image data.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Quantify AII/DI with the built-in g0.1_APA model</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">axQnt</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;g0.1_APA&quot;</span>,                  <span class="co"># or &quot;g0.2_ACC&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">input_dirs =</span> <span class="fu">c</span>(img_dir1, img_dir2),  <span class="co"># multiple folders supported</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">pixelSize =</span> <span class="fl">0.791746</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">output_dir =</span> <span class="fu">tempdir</span>()</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co"># Visualize the results</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="fu">hist</span>(result<span class="sc">$</span>AxonIntegrityIndex, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.1</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;AII distribution&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Axon Integrity Index&quot;</span>)</span></code></pre></div>
+<p>This function generates:</p>
+<ul>
+<li><code>Summary_&lt;date&gt;.csv</code> in <code>output_dir</code>:
+AII and DI for every image of every input folder (<code>FileName</code>
+is the path relative to the input folder)</li>
+<li>One subfolder per input folder
+(<code>&lt;folder&gt;_&lt;date&gt;_output_files</code>) containing the
+summary of that folder, its parameter file, and (optional) single image
+prediction files</li>
+</ul>
+</div>
+</div>
+<div id="advanced-usage" class="section level1">
+<h1>Advanced Usage</h1>
+<div id="built-in-models" class="section level2">
+<h2>Built-in models</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Features</th>
+<th>gamma</th>
+<th>cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>g0.1_APA</code> (recommended)</td>
+<td>Ras, ENT, Per, SVA, SV2</td>
+<td>0.0871</td>
+<td>1.189</td>
+</tr>
+<tr class="even">
+<td><code>g0.2_ACC</code></td>
+<td>CON, ecc, mjx, cir, Ras, Ran</td>
+<td>0.207</td>
+<td>1.110</td>
+</tr>
+</tbody>
+</table>
+<p>In the model names, “g0.1” and “g0.2” refer to the gamma value held
+fixed during forward feature selection. The gamma listed above is the
+final value after a local grid search, which is why the two differ.</p>
+</div>
+<div id="pixel-size-and-image-formats" class="section level2">
+<h2>Pixel size and image formats</h2>
+<p>The pixel size is taken from, in order of priority:</p>
+<ol style="list-style-type: decimal">
+<li>The <code>pixelSize</code> argument (recommended, because metadata
+formats differ between manufacturers)</li>
+<li>The file metadata: OME-XML (OME-TIFF), TIFF resolution tags, or
+ImageJ calibration</li>
+</ol>
+<p>If both the argument and the metadata are available, the argument is
+used, and a warning reports both values. The pixel size can be computed
+as the camera pixel pitch divided by the product of the objective and
+camera-adapter magnifications. OME-TIFF files also record the bit depth
+of the camera (e.g., 12-bit data in a 16-bit file), which is corrected
+automatically.</p>
+<p>Phase-contrast images recorded with a color camera can be analyzed
+with <code>colorMode = &quot;rgb&quot;</code>, which averages the three
+channels:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># e.g., 6.45 um pixel pitch, 20x objective, 0.5x camera adapter: 6.45 / (20 * 0.5) = 0.645</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">axDistmap</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">folder_paths =</span> <span class="st">&quot;path/to/rgb_images&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">pixelSize =</span> <span class="fl">0.645</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">colorMode =</span> <span class="st">&quot;rgb&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">output_path =</span> <span class="fu">tempdir</span>()</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>)</span></code></pre></div>
+<p>The same arguments are accepted by <code>axQnt()</code>. If an image
+is analyzed at a scale different from that of the model (e.g., when its
+pixel size is unknown), <code>axQnt()</code> issues a warning at the end
+of the run.</p>
+</div>
+<div id="exporting-all-features" class="section level2">
+<h2>Exporting all features</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Export all EBImage features plus circularity (cir)</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">axDistmap</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">folder_paths =</span> img_dir1,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">pixelSize =</span> <span class="fl">0.791746</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">featureSet =</span> <span class="st">&quot;all&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">output_path =</span> <span class="fu">tempdir</span>()</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="training-and-applying-a-custom-model" class="section level2">
+<h2>Training and applying a custom model</h2>
+<p>For images acquired with a different modality, objective or camera, a
+classifier trained on your own data is expected to be more accurate. Run
+<code>axDistmap()</code> on your own Degenerate and Intact images, then
+train a model with <code>model = &quot;custom&quot;</code> and apply it with
+<code>axQnt(svm_model_path = )</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Replace Degenerate_dir / Intact_dir with the folders of your own feature tables</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>my_model <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;my_model.svm&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">axSvm</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;custom&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;Ras&quot;</span>, <span class="st">&quot;ENT&quot;</span>, <span class="st">&quot;cir&quot;</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">degenerate_path =</span> Degenerate_dir,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="at">intact_path =</span> Intact_dir,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="at">output_data_path =</span> <span class="fu">tempdir</span>(),</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  <span class="at">output_model_path =</span> my_model</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co"># Apply the custom model</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="fu">axQnt</span>(</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="at">svm_model_path =</span> my_model,</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="at">input_dirs =</span> <span class="fu">c</span>(img_dir1, img_dir2),</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  <span class="at">pixelSize =</span> <span class="fl">0.791746</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  <span class="at">output_dir =</span> <span class="fu">tempdir</span>()</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>features</code> accepts either short names (e.g.,
+<code>&quot;Ras&quot;</code>) or the original EBImage names (e.g.,
+<code>&quot;s.radius.sd&quot;</code>). To choose from all features, export them
+with <code>featureSet = &quot;all&quot;</code> in <code>axDistmap()</code>. If
+<code>nCst</code> and <code>nGmm</code> are not given,
+<code>model = &quot;custom&quot;</code> uses cost = 1 and gamma = 0.1.</p>
+</div>
+<div id="sampling-and-reproducibility" class="section level2">
+<h2>Sampling and reproducibility</h2>
+<p>Because <code>seed = 1</code> by default, identical input always
+produces identical training data, and the random number state of the R
+session is restored afterward. Use a different seed to assess how
+sensitive the model is to sampling variability, or use all data:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Different random sample</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">axSvm</span>(<span class="at">model =</span> <span class="st">&quot;g0.1_APA&quot;</span>, <span class="at">degenerate_path =</span> Degenerate_dir, <span class="at">intact_path =</span> Intact_dir,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>      <span class="at">seed =</span> <span class="dv">2</span>, <span class="at">output_data_path =</span> <span class="fu">tempdir</span>(), <span class="at">output_model_path =</span> <span class="fu">tempdir</span>())</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># All images and all objects</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="fu">axSvm</span>(<span class="at">model =</span> <span class="st">&quot;g0.1_APA&quot;</span>, <span class="at">degenerate_path =</span> Degenerate_dir, <span class="at">intact_path =</span> Intact_dir,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>      <span class="at">maxNumImg =</span> <span class="cn">NULL</span>, <span class="at">maxNumObj =</span> <span class="cn">NULL</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>      <span class="at">output_data_path =</span> <span class="fu">tempdir</span>(), <span class="at">output_model_path =</span> <span class="fu">tempdir</span>())</span></code></pre></div>
+</div>
+<div id="quantifying-from-feature-tables" class="section level2">
+<h2>Quantifying from feature tables</h2>
+<p><code>axQnt()</code> can also use the feature tables exported by
+<code>axDistmap()</code> instead of images:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>txt_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;Degenerate_txt&quot;</span>, <span class="at">package =</span> <span class="st">&quot;AiES&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">axQnt</span>(<span class="at">model =</span> <span class="st">&quot;g0.1_APA&quot;</span>, <span class="at">imprtImg =</span> <span class="cn">FALSE</span>, <span class="at">input_dirs =</span> txt_dir, <span class="at">output_dir =</span> <span class="fu">tempdir</span>())</span></code></pre></div>
+</div>
+</div>
+<div id="upgrading-from-aies-0.99.x" class="section level1">
+<h1>Upgrading from AiES 0.99.x</h1>
+<ul>
+<li>Features are exported under short names (e.g.,
+<code>s.radius.sd</code> is now <code>Ras</code>). Feature tables
+written by earlier versions are converted automatically, but tables
+exported with the earlier default settings lack features required by the
+built-in models. Re-run <code>axDistmap()</code> on the images.</li>
+<li>The <code>allFeatures</code> argument of <code>axDistmap()</code>
+has been replaced by <code>featureSet</code> (<code>&quot;standard&quot;</code> or
+<code>&quot;all&quot;</code>).</li>
+<li>The old example model (<code>svm_example_model.svm</code>) has been
+replaced by two built-in models, <code>g0.1_APA</code> (recommended) and
+<code>g0.2_ACC</code>, so AII and DI differ from those of version
+0.99.x. Models trained with earlier versions can still be applied with
+<code>axQnt(svm_model_path = )</code>.</li>
+<li><code>axSvm()</code> now samples the training data by default (see
+“Sampling and reproducibility”).</li>
+</ul>
+<p>See <code>NEWS.md</code> for the full list of changes.</p>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>With AiES, you can perform <strong>feature extraction, machine
+learning, and quantitative analysis</strong> in a seamless
+workflow.<br />
+For more details, see the help pages for each function (e.g.,
+<code>?AiES</code>, <code>?axDistmap</code>, <code>?axSvm</code>,
+<code>?axQnt</code>).</p>
+</div>
+<div id="source-code-and-issues" class="section level1">
+<h1>Source code and issues</h1>
+<p>You can find the development version of AiES on <a href="https://github.com/BreezyCave/AiES">GitHub</a>.</p>
+<p>For bug reports and feature requests, please use the <a href="https://github.com/BreezyCave/AiES/issues">GitHub Issues
+page</a>.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

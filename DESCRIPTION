@@ -1,31 +1,38 @@
 Package: AiES
 Type: Package
 Title: Axon Integrity Evaluation System for Microscopy Images
-Version: 0.99.6
+Version: 1.0.0
 Authors@R: c(
-  person("Shinji", "Tokunaga", email = "tokunaga@ncnp.go.jp", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8398-3054")),
-  person("Masafumi", "Funakoshi", email = "funakoshi@ncnp.go.jp", role = "ctb"),
-  person("Toshiyuki", "Araki", email = "taraki@ncnp.go.jp", role = "ctb", comment = c(ORCID = "0000-0003-3625-2042"))
-  )
-Maintainer: Shinji Tokunaga <tokunaga@ncnp.go.jp>
-Description: Provides tools for the quantitative analysis of axon integrity in microscopy images. 
-  It implements image pre-processing, adaptive thresholding, feature extraction, and support vector machine-based classification to compute indices such as the Axon Integrity Index (AII) and Degeneration Index (DI).
-  The package is designed for reproducible and automated analysis in neuroscience research.
+    person("Shinji", "Tokunaga", email = "tokunaga@ncnp.go.jp", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8398-3054")),
+    person("Masabumi", "Funakoshi", email = "funakoshi@ncnp.go.jp", role = "ctb"),
+    person("Toshiyuki", "Araki", email = "taraki@ncnp.go.jp", role = "ctb", comment = c(ORCID = "0000-0003-3625-2042")),
+    person("National Center of Neurology and Psychiatry", role = "cph")
+    )
+Description: Provides tools for the quantitative analysis of axon integrity
+    in phase-contrast microscopy images. 'AiES' (Axon integrity Evaluation
+    System) implements image pre-processing, adaptive thresholding, feature
+    extraction, and support vector machine-based classification to compute
+    indices such as the Axon Integrity Index (AII) and Degeneration Index
+    (DI). Two built-in models are provided, and classifiers can be re-trained
+    on user data. The package is designed for reproducible and automated
+    analysis in neuroscience research.
 License: BSD_3_clause + file LICENSE
 Copyright: 2025 National Center of Neurology and Psychiatry
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 URL: https://github.com/BreezyCave/AiES
 BugReports: https://github.com/BreezyCave/AiES/issues
-Imports: EBImage, e1071, stats, fs, data.table
-Suggests: utils, stringr, colorspace, dplyr, knitr, tcltk, rstudioapi,
-        svDialogs
+Depends: R (>= 3.6.0)
+Imports: EBImage, e1071, stats, fs, utils, data.table, rstudioapi, tiff
+Suggests: knitr, rmarkdown, tcltk, svDialogs
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2025-06-04 15:58:48 UTC; 20040
+Packaged: 2026-11-02 13:56:28 UTC; 20040
 Author: Shinji Tokunaga [aut, cre] (ORCID:
     <https://orcid.org/0000-0001-8398-3054>),
-  Masafumi Funakoshi [ctb],
-  Toshiyuki Araki [ctb] (ORCID: <https://orcid.org/0000-0003-3625-2042>)
+  Masabumi Funakoshi [ctb],
+  Toshiyuki Araki [ctb] (ORCID: <https://orcid.org/0000-0003-3625-2042>),
+  National Center of Neurology and Psychiatry [cph]
+Maintainer: Shinji Tokunaga <tokunaga@ncnp.go.jp>
 Repository: CRAN
-Date/Publication: 2025-06-06 12:50:12 UTC
+Date/Publication: 2026-11-02 16:40:23 UTC
